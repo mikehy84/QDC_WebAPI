@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.6e95f0d8.css",
-    "main.js": "/static/js/main.4c108c31.js",
+    "main.js": "/static/js/main.4709bfb0.js",
     "static/media/about_1.png": "/static/media/about_1.537a90278dcffdd1a5c1.png",
     "static/media/building_4.jpg": "/static/media/building_4.c9f4c76d7e354176ee76.jpg",
     "static/media/qdc_logo jpg.jpg": "/static/media/qdc_logo jpg.926ca7c8ce86dbb30126.jpg",
@@ -11,10 +11,10 @@
     "static/media/contact.jpg": "/static/media/contact.19e29bb458fb76c401c9.jpg",
     "index.html": "/index.html",
     "main.6e95f0d8.css.map": "/static/css/main.6e95f0d8.css.map",
-    "main.4c108c31.js.map": "/static/js/main.4c108c31.js.map"
+    "main.4709bfb0.js.map": "/static/js/main.4709bfb0.js.map"
   },
   "entrypoints": [
     "static/css/main.6e95f0d8.css",
-    "static/js/main.4c108c31.js"
+    "static/js/main.4709bfb0.js"
   ]
 }
