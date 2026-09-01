@@ -6,6 +6,7 @@ using Microsoft.OpenApi.Models;
 using QDC_BLL.Interfaces;
 using QDC_BLL.Mapper;
 using QDC_BLL.Repository;
+using QDC_BLL.Services;
 using QDC_DAL.Data;
 using QDC_DAL.Models;
 using System.Text;
@@ -51,8 +52,11 @@ builder.Services.AddAuthentication(a =>
 });
 
 
-// adding UnitOfWork here, so we do not need to add all repositories 
+// adding UnitOfWork here, so we do not need to add all repositories
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+// verifies reCAPTCHA tokens against Google's siteverify endpoint on Login/Register
+builder.Services.AddHttpClient<IRecaptchaService, RecaptchaService>();
 
 // adding AutoMapper here affter installing AutoMapper DependencyInjection
 builder.Services.AddAutoMapper(typeof(MappingProfile));

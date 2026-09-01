@@ -16,12 +16,14 @@ namespace QDC_API.Controllers
         private readonly IUnitOfWork _unitOfWork;
         protected ApiResponse _response;
         private readonly IMapper _mapper;
+        private readonly IRecaptchaService _recaptchaService;
 
-        public UserController(IMapper mapper, IUnitOfWork unitOfWork)
+        public UserController(IMapper mapper, IUnitOfWork unitOfWork, IRecaptchaService recaptchaService)
         {
             _mapper = mapper;
             this._response = new();
             _unitOfWork = unitOfWork;
+            _recaptchaService = recaptchaService;
         }
 
         [HttpGet]
@@ -96,6 +98,14 @@ namespace QDC_API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Login([FromBody] LoginRequestDTO model)
         {
+            if (!await _recaptchaService.VerifyAsync(model.RecaptchaToken))
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("reCAPTCHA verification failed");
+                return BadRequest(_response);
+            }
+
             var loginResponse = await _unitOfWork.User.Login(model);
             if (loginResponse.User == null || string.IsNullOrEmpty(loginResponse.Token))
             {
@@ -120,6 +130,14 @@ namespace QDC_API.Controllers
         [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Register([FromBody] RegisterRequestDTO model)
         {
+            if (!await _recaptchaService.VerifyAsync(model.RecaptchaToken))
+            {
+                _response.StatusCode = HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.ErrorMessages.Add("reCAPTCHA verification failed");
+                return BadRequest(_response);
+            }
+
             bool ifUserNameUnique = _unitOfWork.User.IsUniqueUser(model.Email);
             if (!ifUserNameUnique)
             {

@@ -12,5 +12,6 @@ namespace QDC_DML.Identity
         [DisplayName("Email")]
         public string UserName { get; set; }
         public string Password { get; set; }
+        public string RecaptchaToken { get; set; }
     }
 }
