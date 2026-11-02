@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using QDC_BLL.Interfaces;
 using QDC_BLL.Mapper;
 using QDC_BLL.Repository;
@@ -59,7 +59,10 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpClient<IRecaptchaService, RecaptchaService>();
 
 // adding AutoMapper here affter installing AutoMapper DependencyInjection
-builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(cfg =>
+{
+    cfg.AddProfile<MappingProfile>();
+});
 
 
 
@@ -100,34 +103,24 @@ builder.Services.AddCors(options =>
 
 
 // to add Authorization button on Swagger
+// to add Authorization button on Swagger
 builder.Services.AddSwaggerGen(options =>
 {
     options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description =
             "JWT Authorization header using the Bearer scheme. \r\n\r\n " +
-            "Enter 'Bearer' [space] and then your token in the text input below. \r\n\r\n " +
-            "Example: \"Bearer 12345abcdef \"",
-        Name = "Authorization",
+            "Enter your token in the text input below (Swagger adds the 'Bearer' prefix for you).",
+        Type = SecuritySchemeType.Http,
+        Scheme = "bearer",
+        BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Scheme = "Bearer"
+        Name = "Authorization"
     });
-    options.AddSecurityRequirement(new OpenApiSecurityRequirement()
+
+    options.AddSecurityRequirement(document => new OpenApiSecurityRequirement
     {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                },
-                Scheme = "oauth2",
-                Name = "Bearer",
-                In = ParameterLocation.Header,
-            },
-            new List<string>()
-        }
+        [new OpenApiSecuritySchemeReference("Bearer", document)] = new List<string>()
     });
 });
 
